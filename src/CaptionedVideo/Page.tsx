@@ -46,8 +46,10 @@ export const Page: React.FC<{
         style={{
           fontSize,
           color: "white",
-          WebkitTextStroke: "20px black",
-          paintOrder: "stroke",
+          backgroundColor: "rgba(0, 0, 0, 0.5)", // Added background
+          paddingLeft: "20px", // Added padding
+          paddingRight: "20px", // Added padding
+          borderRadius: "10px", // Optional: for rounded corners
           transform: makeTransform([
             scale(interpolate(enterProgress, [0, 1], [0.8, 1])),
             translateY(interpolate(enterProgress, [0, 1], [50, 0])),
