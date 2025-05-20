@@ -16,12 +16,12 @@ const container: React.CSSProperties = {
   justifyContent: "center",
   alignItems: "center",
   top: undefined,
-  bottom: 350,
+  bottom: 540,
   height: 150,
 };
 
-const DESIRED_FONT_SIZE = 120;
-const HIGHLIGHT_COLOR = "#39E508";
+const FIXED_FONT_SIZE = 50; // Adjusted for better consistency and fit
+const HIGHLIGHT_COLOR = "#635BFF";
 
 export const Page: React.FC<{
   readonly enterProgress: number;
@@ -38,7 +38,7 @@ export const Page: React.FC<{
     textTransform: "uppercase",
   });
 
-  const fontSize = Math.min(DESIRED_FONT_SIZE, fittedText.fontSize);
+  const fontSize = FIXED_FONT_SIZE; // Use the fixed font size
 
   return (
     <AbsoluteFill style={container}>
@@ -78,7 +78,7 @@ export const Page: React.FC<{
                 style={{
                   display: "inline",
                   whiteSpace: "pre",
-                  color: active ? HIGHLIGHT_COLOR : "white",
+                  color: "white", // Always use the default color
                 }}
               >
                 {t.text}

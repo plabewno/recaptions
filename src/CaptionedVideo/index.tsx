@@ -98,15 +98,7 @@ export const CaptionedVideo: React.FC<{
   }, [subtitles]);
 
   return (
-    <AbsoluteFill style={{ backgroundColor: "white" }}>
-      <AbsoluteFill>
-        <OffthreadVideo
-          style={{
-            objectFit: "cover",
-          }}
-          src={src}
-        />
-      </AbsoluteFill>
+    <AbsoluteFill style={{ backgroundColor: "transparent" }}>
       {pages.map((page, index) => {
         const nextPage = pages[index + 1] ?? null;
         const subtitleStartFrame = (page.startMs / 1000) * fps;
