@@ -9,7 +9,6 @@ import { Page } from "./Page";
 import { TikTokPage } from "@remotion/captions";
 
 const SubtitlePage: React.FC<{ readonly page: TikTokPage }> = ({ page }) => {
-  // Animation removed by setting enterProgress to 1
   const enterProgress = 1;
 
   return (

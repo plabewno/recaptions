@@ -1,12 +1,6 @@
 import React from "react";
-import {
-  AbsoluteFill,
-  interpolate,
-  useCurrentFrame,
-  useVideoConfig,
-} from "remotion";
+import { AbsoluteFill, interpolate } from "remotion";
 import { TheBoldFont } from "../load-font";
-import { fitText } from "@remotion/layout-utils";
 import { makeTransform, scale, translateY } from "@remotion/animation-utils";
 import { TikTokPage } from "@remotion/captions";
 
@@ -20,25 +14,13 @@ const container: React.CSSProperties = {
   height: 150,
 };
 
-const FIXED_FONT_SIZE = 50; // Adjusted for better consistency and fit
-const HIGHLIGHT_COLOR = "#635BFF";
+const FIXED_FONT_SIZE = 50;
 
 export const Page: React.FC<{
   readonly enterProgress: number;
   readonly page: TikTokPage;
 }> = ({ enterProgress, page }) => {
-  const frame = useCurrentFrame();
-  const { width, fps } = useVideoConfig();
-  const timeInMs = (frame / fps) * 1000;
-
-  const fittedText = fitText({
-    fontFamily,
-    text: page.text,
-    withinWidth: width * 0.9,
-    textTransform: "uppercase",
-  });
-
-  const fontSize = FIXED_FONT_SIZE; // Use the fixed font size
+  const fontSize = FIXED_FONT_SIZE;
 
   return (
     <AbsoluteFill style={container}>
@@ -46,10 +28,10 @@ export const Page: React.FC<{
         style={{
           fontSize,
           color: "white",
-          backgroundColor: "rgba(0, 0, 0, 0.5)", // Added background
-          paddingLeft: "20px", // Added padding
-          paddingRight: "20px", // Added padding
-          borderRadius: "10px", // Optional: for rounded corners
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          paddingLeft: "20px",
+          paddingRight: "20px",
+          borderRadius: "10px",
           transform: makeTransform([
             scale(interpolate(enterProgress, [0, 1], [0.8, 1])),
             translateY(interpolate(enterProgress, [0, 1], [50, 0])),
@@ -58,29 +40,14 @@ export const Page: React.FC<{
           textTransform: "uppercase",
         }}
       >
-        <span
-          style={{
-            transform: makeTransform([
-              scale(interpolate(enterProgress, [0, 1], [0.8, 1])),
-              translateY(interpolate(enterProgress, [0, 1], [50, 0])),
-            ]),
-          }}
-        >
+        <span>
           {page.tokens.map((t) => {
-            const startRelativeToSequence = t.fromMs - page.startMs;
-            const endRelativeToSequence = t.toMs - page.startMs;
-
-            const active =
-              startRelativeToSequence <= timeInMs &&
-              endRelativeToSequence > timeInMs;
-
             return (
               <span
                 key={t.fromMs}
                 style={{
                   display: "inline",
                   whiteSpace: "pre",
-                  color: "white", // Always use the default color
                 }}
               >
                 {t.text}
