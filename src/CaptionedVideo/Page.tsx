@@ -28,7 +28,7 @@ export const Page: React.FC<{
         style={{
           fontSize,
           color: "white",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
           paddingLeft: "20px",
           paddingRight: "20px",
           borderRadius: "10px",
