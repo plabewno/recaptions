@@ -7,3 +7,5 @@ whisper.cpp
 bun.locl
 pnpm-lock.yaml
 .gitignore
+public
+temp
