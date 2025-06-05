@@ -41,14 +41,20 @@ const getFileExists = (file: string) => {
   return Boolean(fileExists);
 };
 
-const SWITCH_CAPTIONS_EVERY_MS = 1200;
-
 export const CaptionedVideo: React.FC<{
   src: string;
 }> = ({ src }) => {
   const [subtitles, setSubtitles] = useState<Caption[]>([]);
   const [handle] = useState(() => delayRender());
-  const { fps } = useVideoConfig();
+  const { fps, width, height } = useVideoConfig();
+
+  const switchCaptionsDurationMs = useMemo(() => {
+    const aspectRatio = width / height;
+    if (aspectRatio > 1.2) { // Horizontal video
+      return 2400;
+    }
+    return 1200; // Vertical or square video
+  }, [width, height]);
 
   const subtitlesFile = src
     .replace(/.mp4$/, ".json")
@@ -82,10 +88,10 @@ export const CaptionedVideo: React.FC<{
 
   const { pages } = useMemo(() => {
     return createTikTokStyleCaptions({
-      combineTokensWithinMilliseconds: SWITCH_CAPTIONS_EVERY_MS,
+      combineTokensWithinMilliseconds: switchCaptionsDurationMs,
       captions: subtitles ?? [],
     });
-  }, [subtitles]);
+  }, [subtitles, switchCaptionsDurationMs]);
 
   return (
     <AbsoluteFill style={{ backgroundColor: "transparent" }}>
@@ -94,7 +100,7 @@ export const CaptionedVideo: React.FC<{
         const subtitleStartFrame = (page.startMs / 1000) * fps;
         const subtitleEndFrame = Math.min(
           nextPage ? (nextPage.startMs / 1000) * fps : Infinity,
-          subtitleStartFrame + SWITCH_CAPTIONS_EVERY_MS,
+          subtitleStartFrame + (switchCaptionsDurationMs / 1000) * fps,
         );
         const durationInFrames = subtitleEndFrame - subtitleStartFrame;
         if (durationInFrames <= 0) {

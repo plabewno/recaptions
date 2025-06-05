@@ -27,7 +27,7 @@ export const Page: React.FC<{
   const { fps } = useVideoConfig();
   const timeInMs = (frame / fps) * 1000;
 
-  const fontSize = 50;
+  const fontSize = 45;
 
   return (
     <AbsoluteFill style={container}>
