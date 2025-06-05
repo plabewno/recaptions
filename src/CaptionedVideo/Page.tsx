@@ -34,8 +34,8 @@ export const Page: React.FC<{
       <div
         style={{
           fontSize,
-          color: "black",
-          backgroundColor: "white",
+          color: "white",
+          backgroundColor: "black",
           paddingLeft: "30px",
           paddingRight: "30px",
           borderRadius: "30px",
@@ -73,7 +73,7 @@ export const Page: React.FC<{
                 style={{
                   display: "inline",
                   whiteSpace: "pre",
-                  color: "black",
+                  color: "white",
                   opacity: wordOpacity,
                 }}
               >
