@@ -98,10 +98,7 @@ export const CaptionedVideo: React.FC<{
       {pages.map((page, index) => {
         const nextPage = pages[index + 1] ?? null;
         const subtitleStartFrame = (page.startMs / 1000) * fps;
-        const subtitleEndFrame = Math.min(
-          nextPage ? (nextPage.startMs / 1000) * fps : Infinity,
-          subtitleStartFrame + (switchCaptionsDurationMs / 1000) * fps,
-        );
+        const subtitleEndFrame = nextPage ? (nextPage.startMs / 1000) * fps : Infinity;
         const durationInFrames = subtitleEndFrame - subtitleStartFrame;
         if (durationInFrames <= 0) {
           return null;
