@@ -23,7 +23,7 @@ import {
 
 const extractToTempAudioFile = (fileToTranscribe, tempOutFile) => {
   execSync(
-    `npx remotion ffmpeg -i "${fileToTranscribe}" -ar 16000 "${tempOutFile}" -y`,
+    `bunx remotion ffmpeg -i "${fileToTranscribe}" -ar 16000 "${tempOutFile}" -y`,
     { stdio: ["ignore", "inherit"] },
   );
 };
