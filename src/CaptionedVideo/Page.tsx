@@ -34,18 +34,20 @@ export const Page: React.FC<{
         style={{
           fontSize,
           color: "white",
-          backgroundColor: "black",
+          backgroundColor: "rgba(0, 0, 0, 0.75)",
+          paddingTop: "10px",
+          paddingBottom: "10px",
           paddingLeft: "30px",
           paddingRight: "30px",
-          borderRadius: "30px",
+          borderRadius: "20px",
           transform: makeTransform([
             scale(interpolate(enterProgress, [0, 1], [0.8, 1])),
             translateY(interpolate(enterProgress, [0, 1], [50, 0])),
           ]),
           fontFamily,
-          textTransform: "uppercase",
+          textTransform: "capitalize",
           display: "inline-block",
-          boxShadow: "8px 8px 10px rgba(0, 0, 0, 0.5)",
+          // boxShadow: "8px 8px 10px rgba(0, 0, 0, 0.5)",
         }}
       >
         <span>
