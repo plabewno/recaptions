@@ -53,7 +53,7 @@ export const CaptionedVideo: React.FC<{
     if (aspectRatio > 1.2) { // Horizontal video
       return 2400;
     }
-    return 1200; // Vertical or square video
+    return 1500; // Vertical or square video
   }, [width, height]);
 
   const subtitlesFile = src

@@ -15,7 +15,7 @@ const container: React.CSSProperties = {
   justifyContent: "center",
   alignItems: "center",
   top: undefined,
-  height: 300,
+  height: 1000,
 };
 
 export const Page: React.FC<{
