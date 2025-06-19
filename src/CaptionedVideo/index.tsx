@@ -19,6 +19,8 @@ import { Caption, createTikTokStyleCaptions } from "@remotion/captions";
 
 export const captionedVideoSchema = z.object({
   src: z.string(),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
 });
 
 export const calculateCaptionedVideoMetadata: CalculateMetadataFunction<
@@ -30,6 +32,8 @@ export const calculateCaptionedVideoMetadata: CalculateMetadataFunction<
   return {
     fps,
     durationInFrames: Math.floor(metadata.durationInSeconds * fps),
+    width: props.width,
+    height: props.height,
   };
 };
 
@@ -41,9 +45,12 @@ const getFileExists = (file: string) => {
   return Boolean(fileExists);
 };
 
-export const CaptionedVideo: React.FC<{
-  src: string;
-}> = ({ src }) => {
+export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
+  src,
+  // width and height are now part of the props due to the schema.
+  // We'll continue to use width and height from useVideoConfig() as it's idiomatic
+  // and will reflect the values set by calculateCaptionedVideoMetadata.
+}) => {
   const [subtitles, setSubtitles] = useState<Caption[]>([]);
   const [handle] = useState(() => delayRender());
   const { fps, width, height } = useVideoConfig();
