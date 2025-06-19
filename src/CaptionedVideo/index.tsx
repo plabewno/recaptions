@@ -13,12 +13,15 @@ import {
 import { z } from "zod";
 import SubtitlePage from "./SubtitlePage";
 import { getVideoMetadata } from "@remotion/media-utils";
+import { SimplePage } from "./SimplePage"; // Import SimplePage
 import { loadFont } from "../load-font";
 import { NoCaptionFile } from "./NoCaptionFile";
 import { Caption, createTikTokStyleCaptions } from "@remotion/captions";
 
+export const captionStyles = ["tiktok", "simple"] as const;
 export const captionedVideoSchema = z.object({
   src: z.string(),
+  captionStyle: z.enum(captionStyles).optional().default("tiktok"),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
   switchCaptionsDurationMs: z.number().int().positive().optional(),
@@ -48,6 +51,7 @@ const getFileExists = (file: string) => {
 
 export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
   src,
+  captionStyle,
   switchCaptionsDurationMs: switchCaptionsDurationMsProp,
   // width and height are now part of the props due to the schema.
   // We'll continue to use width and height from useVideoConfig() as it's idiomatic
@@ -97,6 +101,8 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
     });
   }, [subtitles, switchCaptionsDurationMs]);
 
+  const PageComponent = captionStyle === "simple" ? SimplePage : SubtitlePage;
+
   return (
     <AbsoluteFill style={{ backgroundColor: "transparent" }}>
       {pages.map((page, index) => {
@@ -114,7 +120,7 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
             from={subtitleStartFrame}
             durationInFrames={durationInFrames}
           >
-            <SubtitlePage key={index} page={page} />;
+            <PageComponent key={index} page={page} />;
           </Sequence>
         );
       })}

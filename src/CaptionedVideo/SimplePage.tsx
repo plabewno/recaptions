@@ -9,7 +9,7 @@ const fontFamily = CaptionFont;
 const textStyle: React.CSSProperties = {
   fontFamily,
   fontSize: 45, // Default font size, can be made a prop
-  color: "black", // Default color, can be made a prop
+  color: "green", // Default color, can be made a prop
   textAlign: "center",
   textTransform: "capitalize", // As per original Page.tsx
   position: "absolute",
