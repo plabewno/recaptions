@@ -17,6 +17,7 @@ export const RemotionRoot: React.FC = () => {
         src: staticFile("input.mp4"),
         width: 1920,
         height: 1080,
+        switchCaptionsDurationMs: 2000,
       }}
     />
   );

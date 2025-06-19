@@ -21,6 +21,7 @@ export const captionedVideoSchema = z.object({
   src: z.string(),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
+  switchCaptionsDurationMs: z.number().int().positive().optional(),
 });
 
 export const calculateCaptionedVideoMetadata: CalculateMetadataFunction<
@@ -47,21 +48,17 @@ const getFileExists = (file: string) => {
 
 export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
   src,
+  switchCaptionsDurationMs: switchCaptionsDurationMsProp,
   // width and height are now part of the props due to the schema.
   // We'll continue to use width and height from useVideoConfig() as it's idiomatic
   // and will reflect the values set by calculateCaptionedVideoMetadata.
 }) => {
   const [subtitles, setSubtitles] = useState<Caption[]>([]);
   const [handle] = useState(() => delayRender());
-  const { fps, width, height } = useVideoConfig();
+  const { fps } = useVideoConfig();
 
-  const switchCaptionsDurationMs = useMemo(() => {
-    const aspectRatio = width / height;
-    if (aspectRatio > 1.2) { // Horizontal video
-      return 2400;
-    }
-    return 1500; // Vertical or square video
-  }, [width, height]);
+  // Use the prop value, or a default if not provided.
+  const switchCaptionsDurationMs = switchCaptionsDurationMsProp ?? 1500;
 
   const subtitlesFile = src
     .replace(/.mp4$/, ".json")
