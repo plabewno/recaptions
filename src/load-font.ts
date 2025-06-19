@@ -1,6 +1,6 @@
 import { continueRender, delayRender, staticFile } from "remotion";
 
-export const TheBoldFont = `TheBoldFont`;
+export const CaptionFont = `CaptionFont`;
 
 let loaded = false;
 
@@ -14,8 +14,8 @@ export const loadFont = async (): Promise<void> => {
   loaded = true;
 
   const font = new FontFace(
-    TheBoldFont,
-    `url('${staticFile("fonts/Montserrat-SemiBold.ttf")}') format('truetype')`,
+    CaptionFont,
+    `url('${staticFile("fonts/Montserrat-BOLD.ttf")}') format('truetype')`,
   );
 
   await font.load();
