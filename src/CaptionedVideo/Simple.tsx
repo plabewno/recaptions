@@ -25,7 +25,7 @@ const fillStyle: React.CSSProperties = {
   paddingBottom: "5%", // Add some padding from the bottom
 };
 
-export const SimplePage: React.FC<{
+export const Simple: React.FC<{
   readonly page: TikTokPage;
 }> = ({ page }) => {
   const fullText = page.tokens.map((t) => t.text).join("");

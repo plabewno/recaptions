@@ -1,6 +1,6 @@
 import React from "react";
 import { AbsoluteFill } from "remotion";
-import { Page } from "./Page";
+import { AliAbdaal } from "./AliAbdaal";
 import { TikTokPage } from "@remotion/captions";
 
 const SubtitlePage: React.FC<{ readonly page: TikTokPage }> = ({ page }) => {
@@ -8,7 +8,7 @@ const SubtitlePage: React.FC<{ readonly page: TikTokPage }> = ({ page }) => {
 
   return (
     <AbsoluteFill>
-      <Page enterProgress={enterProgress} page={page} />
+      <AliAbdaal enterProgress={enterProgress} page={page} />
     </AbsoluteFill>
   );
 };

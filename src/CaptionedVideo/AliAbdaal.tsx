@@ -21,14 +21,13 @@ const container: React.CSSProperties = {
 
 const customEasing = Easing.ease;
 
-export const Page: React.FC<{
+export const AliAbdaal: React.FC<{
   readonly page: TikTokPage;
 }> = ({ page }) => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
   const timeInMs = (frame / fps) * 1000;
   const fontSize = 45;
-
 
   const animationDurationInFrames = 0.1 * fps; // 0.5 seconds
   const slideDistance = 10; // 20px slide

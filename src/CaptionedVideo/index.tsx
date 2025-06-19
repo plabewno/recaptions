@@ -13,15 +13,15 @@ import {
 import { z } from "zod";
 import SubtitlePage from "./SubtitlePage";
 import { getVideoMetadata } from "@remotion/media-utils";
-import { SimplePage } from "./SimplePage"; // Import SimplePage
+import { Simple } from "./Simple"; // Import Simple
 import { loadFont } from "../load-font";
 import { NoCaptionFile } from "./NoCaptionFile";
 import { Caption, createTikTokStyleCaptions } from "@remotion/captions";
 
-export const captionStyles = ["tiktok", "simple"] as const;
+export const captionStyles = ["Ali Abdaal", "simple"] as const;
 export const captionedVideoSchema = z.object({
   src: z.string(),
-  captionStyle: z.enum(captionStyles).optional().default("tiktok"),
+  captionStyle: z.enum(captionStyles).optional().default("Ali Abdaal"),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
   switchCaptionsDurationMs: z.number().int().positive().optional(),
@@ -101,14 +101,16 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
     });
   }, [subtitles, switchCaptionsDurationMs]);
 
-  const PageComponent = captionStyle === "simple" ? SimplePage : SubtitlePage;
+  const PageComponent = captionStyle === "simple" ? Simple : SubtitlePage;
 
   return (
     <AbsoluteFill style={{ backgroundColor: "transparent" }}>
       {pages.map((page, index) => {
         const nextPage = pages[index + 1] ?? null;
         const subtitleStartFrame = (page.startMs / 1000) * fps;
-        const subtitleEndFrame = nextPage ? (nextPage.startMs / 1000) * fps : Infinity;
+        const subtitleEndFrame = nextPage
+          ? (nextPage.startMs / 1000) * fps
+          : Infinity;
         const durationInFrames = subtitleEndFrame - subtitleStartFrame;
         if (durationInFrames <= 0) {
           return null;
