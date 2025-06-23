@@ -29,11 +29,12 @@
     "typescript": "5.8.2"
   },
   "scripts": {
-    "dev": "remotion studio",
+    "start": "remotion studio",
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc",
-    "create-subtitles": "node sub.mjs"
+    "transcribe": "bun sub.mjs",
+    "new": "bun sub.mjs; remotion studio"
   },
   "sideEffects": [
     "*.css"
