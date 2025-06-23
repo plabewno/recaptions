@@ -19,6 +19,11 @@ export const RemotionRoot: React.FC = () => {
         height: 1080,
         switchCaptionsDurationMs: 2000,
         captionStyle: "Ali Abdaal",
+        // Positioned 35% down from the vertical center.
+        // 0 would be perfect center. -35 would be in the upper third.
+        captionVerticalOffset: 35,
+        // Positioned 0% from the horizontal center.
+        captionHorizontalOffset: 0,
       }}
     />
   );

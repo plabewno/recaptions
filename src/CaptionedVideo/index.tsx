@@ -13,15 +13,31 @@ import {
 import { z } from "zod";
 import SubtitlePage from "./SubtitlePage";
 import { getVideoMetadata } from "@remotion/media-utils";
-import { Simple } from "./Simple"; // Import Simple
+import { Simple } from "./Simple";
 import { loadFont } from "../load-font";
 import { NoCaptionFile } from "./NoCaptionFile";
 import { Caption, createTikTokStyleCaptions } from "@remotion/captions";
 
 export const captionStyles = ["Ali Abdaal", "simple"] as const;
+
 export const captionedVideoSchema = z.object({
   src: z.string(),
   captionStyle: z.enum(captionStyles).optional().default("Ali Abdaal"),
+  // Simplified positioning controls with percentage-based offsets
+  captionVerticalOffset: z
+    .number()
+    .int()
+    .min(-100)
+    .max(100)
+    .optional()
+    .default(0),
+  captionHorizontalOffset: z
+    .number()
+    .int()
+    .min(-100)
+    .max(100)
+    .optional()
+    .default(0),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
   switchCaptionsDurationMs: z.number().int().positive().optional(),
@@ -43,25 +59,21 @@ export const calculateCaptionedVideoMetadata: CalculateMetadataFunction<
 
 const getFileExists = (file: string) => {
   const files = getStaticFiles();
-  const fileExists = files.find((f) => {
-    return f.src === file;
-  });
+  const fileExists = files.find((f) => f.src === file);
   return Boolean(fileExists);
 };
 
 export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
   src,
   captionStyle,
+  captionVerticalOffset,
+  captionHorizontalOffset,
   switchCaptionsDurationMs: switchCaptionsDurationMsProp,
-  // width and height are now part of the props due to the schema.
-  // We'll continue to use width and height from useVideoConfig() as it's idiomatic
-  // and will reflect the values set by calculateCaptionedVideoMetadata.
 }) => {
   const [subtitles, setSubtitles] = useState<Caption[]>([]);
   const [handle] = useState(() => delayRender());
   const { fps } = useVideoConfig();
 
-  // Use the prop value, or a default if not provided.
   const switchCaptionsDurationMs = switchCaptionsDurationMsProp ?? 1500;
 
   const subtitlesFile = src
@@ -84,11 +96,9 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
 
   useEffect(() => {
     fetchSubtitles();
-
     const c = watchStaticFile(subtitlesFile, () => {
       fetchSubtitles();
     });
-
     return () => {
       c.cancel();
     };
@@ -102,6 +112,15 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
   }, [subtitles, switchCaptionsDurationMs]);
 
   const PageComponent = captionStyle === "simple" ? Simple : SubtitlePage;
+
+  const positioningStyle = useMemo((): React.CSSProperties => {
+    return {
+      display: "flex",
+      justifyContent: "center", // Center horizontally by default
+      alignItems: "center",     // Center vertically by default
+      transform: `translateX(${captionHorizontalOffset}%) translateY(${captionVerticalOffset}%)`,
+    };
+  }, [captionVerticalOffset, captionHorizontalOffset]);
 
   return (
     <AbsoluteFill style={{ backgroundColor: "transparent" }}>
@@ -122,7 +141,9 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
             from={subtitleStartFrame}
             durationInFrames={durationInFrames}
           >
-            <PageComponent key={index} page={page} />;
+            <AbsoluteFill style={positioningStyle}>
+              <PageComponent key={index} page={page} />
+            </AbsoluteFill>
           </Sequence>
         );
       })}
