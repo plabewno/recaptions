@@ -15,14 +15,12 @@ export const RemotionRoot: React.FC = () => {
       schema={captionedVideoSchema}
       defaultProps={{
         src: staticFile("input.mp4"),
-        width: 1920,
-        height: 1080,
+        width: 1080,
+        height: 1920,
+        fps: 30,
         switchCaptionsDurationMs: 2000,
         captionStyle: "Ali Abdaal",
-        // Positioned 35% down from the vertical center.
-        // 0 would be perfect center. -35 would be in the upper third.
         captionVerticalOffset: 35,
-        // Positioned 0% from the horizontal center.
         captionHorizontalOffset: 0,
       }}
     />

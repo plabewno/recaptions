@@ -22,8 +22,8 @@ export const captionStyles = ["Ali Abdaal", "simple"] as const;
 
 export const captionedVideoSchema = z.object({
   src: z.string(),
+  fps: z.number().int().positive().optional().default(30), // FPS is now a prop
   captionStyle: z.enum(captionStyles).optional().default("Ali Abdaal"),
-  // Simplified positioning controls with percentage-based offsets
   captionVerticalOffset: z
     .number()
     .int()
@@ -46,7 +46,8 @@ export const captionedVideoSchema = z.object({
 export const calculateCaptionedVideoMetadata: CalculateMetadataFunction<
   z.infer<typeof captionedVideoSchema>
 > = async ({ props }) => {
-  const fps = 30;
+  // Use the fps from the props
+  const { fps } = props;
   const metadata = await getVideoMetadata(props.src);
 
   return {
@@ -69,10 +70,11 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
   captionVerticalOffset,
   captionHorizontalOffset,
   switchCaptionsDurationMs: switchCaptionsDurationMsProp,
+  // Note: `fps` prop isn't needed here directly. `useVideoConfig()` will provide it.
 }) => {
   const [subtitles, setSubtitles] = useState<Caption[]>([]);
   const [handle] = useState(() => delayRender());
-  const { fps } = useVideoConfig();
+  const { fps } = useVideoConfig(); // This gets the FPS set by calculateMetadata
 
   const switchCaptionsDurationMs = switchCaptionsDurationMsProp ?? 1500;
 
@@ -116,8 +118,8 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
   const positioningStyle = useMemo((): React.CSSProperties => {
     return {
       display: "flex",
-      justifyContent: "center", // Center horizontally by default
-      alignItems: "center",     // Center vertically by default
+      justifyContent: "center",
+      alignItems: "center",
       transform: `translateX(${captionHorizontalOffset}%) translateY(${captionVerticalOffset}%)`,
     };
   }, [captionVerticalOffset, captionHorizontalOffset]);
