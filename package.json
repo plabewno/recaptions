@@ -34,7 +34,7 @@
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc",
     "transcribe": "bun sub.mjs",
-    "new": "bun sub.mjs; remotion studio" //test
+    "new": "bun sub.mjs; remotion studio" //ywy
   },
   "sideEffects": [
     "*.css"
