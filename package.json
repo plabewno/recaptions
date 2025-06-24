@@ -35,7 +35,7 @@
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc",
     "transcribe": "bun sub.mjs",
-    "new": "bun sub.mjs; remotion studio",
+    "new": "rm public/input.json; bun sub.mjs; remotion studio",
     "model": "bun change-whisper-model.mjs"
   },
   "sideEffects": [
