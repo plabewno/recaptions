@@ -15,7 +15,7 @@ export const loadFont = async (): Promise<void> => {
 
   const font = new FontFace(
     CaptionFont,
-    `url('${staticFile("fonts/Montserrat-BLACK.ttf")}') format('truetype')`,
+    `url('${staticFile("fonts/Rubik-Bold.ttf")}') format('truetype')`,
   );
 
   await font.load();

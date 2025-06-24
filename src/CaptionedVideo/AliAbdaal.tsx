@@ -18,7 +18,7 @@ export const AliAbdaal: React.FC<{
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
   const timeInMs = (frame / fps) * 1000;
-  const fontSize = 45;
+  const fontSize = 50;
 
   const animationDurationInFrames = 0.1 * fps;
   const slideDistance = 10;

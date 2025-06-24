@@ -17,10 +17,10 @@ export const RemotionRoot: React.FC = () => {
         src: staticFile("input.mp4"),
         width: 1080,
         height: 1920,
-        fps: 30,
-        switchCaptionsDurationMs: 2000,
-        captionStyle: "Ali Abdaal",
-        captionVerticalOffset: 35,
+        fps: 60,
+        switchCaptionsDurationMs: 200,
+        captionStyle: "simple" as const,
+        captionVerticalOffset: 40,
         captionHorizontalOffset: 0,
       }}
     />
