@@ -22,6 +22,7 @@ export const RemotionRoot: React.FC = () => {
         captionStyle: "simple" as const,
         captionVerticalOffset: 30,
         captionHorizontalOffset: 0,
+        textTransform: "capitalize" as const,
       }}
     />
   );

@@ -20,6 +20,8 @@ import { Caption, createTikTokStyleCaptions } from "@remotion/captions";
 
 export const captionStyles = ["Ali Abdaal", "simple"] as const;
 
+const textTransformOptions = ["capitalize", "uppercase", "lowercase"] as const;
+
 export const captionedVideoSchema = z.object({
   src: z.string(),
   fps: z.number().int().positive().optional().default(30), // FPS is now a prop
@@ -41,6 +43,10 @@ export const captionedVideoSchema = z.object({
   width: z.number().int().positive(),
   height: z.number().int().positive(),
   switchCaptionsDurationMs: z.number().int().positive().optional(),
+  textTransform: z
+    .enum(textTransformOptions)
+    .optional()
+    .default("capitalize"),
 });
 
 export const calculateCaptionedVideoMetadata: CalculateMetadataFunction<
@@ -70,6 +76,7 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
   captionVerticalOffset,
   captionHorizontalOffset,
   switchCaptionsDurationMs: switchCaptionsDurationMsProp,
+  textTransform,
   // Note: `fps` prop isn't needed here directly. `useVideoConfig()` will provide it.
 }) => {
   const [subtitles, setSubtitles] = useState<Caption[]>([]);
@@ -144,7 +151,11 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
             durationInFrames={durationInFrames}
           >
             <AbsoluteFill style={positioningStyle}>
-              <PageComponent key={index} page={page} />
+              <PageComponent
+                key={index}
+                page={page}
+                textTransform={textTransform}
+              />
             </AbsoluteFill>
           </Sequence>
         );

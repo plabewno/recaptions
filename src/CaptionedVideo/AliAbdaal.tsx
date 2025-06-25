@@ -14,7 +14,8 @@ const customEasing = Easing.ease;
 
 export const AliAbdaal: React.FC<{
   readonly page: TikTokPage;
-}> = ({ page }) => {
+  readonly textTransform: "capitalize" | "uppercase" | "lowercase";
+}> = ({ page, textTransform }) => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
   const timeInMs = (frame / fps) * 1000;
@@ -76,7 +77,7 @@ export const AliAbdaal: React.FC<{
         transform: makeTransform([translateY(y)]),
         filter: `blur(${blur}px)`,
         fontFamily,
-        textTransform: "capitalize",
+        textTransform: textTransform,
         display: "inline-block",
         textAlign: "center",
       }}

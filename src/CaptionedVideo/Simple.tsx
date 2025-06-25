@@ -10,7 +10,6 @@ const textStyle: React.CSSProperties = {
   fontSize: 70,
   color: "white",
   textAlign: "center",
-  textTransform: "capitalize",
   paintOrder: "stroke",
   WebkitTextStroke: "10px black",
 };
@@ -29,7 +28,8 @@ const EXIT_ANIMATION_FRAMES = 2;
 
 export const Simple: React.FC<{
   readonly page: TikTokPage;
-}> = ({ page }) => {
+  readonly textTransform: "capitalize" | "uppercase" | "lowercase";
+}> = ({ page, textTransform }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
 
@@ -74,6 +74,7 @@ export const Simple: React.FC<{
     <div
       style={{
         ...textStyle,
+        textTransform,
         transform: `scale(${scale})`,
       }}
     >
