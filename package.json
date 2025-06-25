@@ -37,7 +37,7 @@
     "transcribe": "bun sub.mjs",
     "new": "rm public/input.json; bun sub.mjs; remotion studio",
     "model": "bun change-whisper-model.mjs",
-    "update": "git pull"
+    "update": "git stash; git pull"
   },
   "sideEffects": [
     "*.css"
