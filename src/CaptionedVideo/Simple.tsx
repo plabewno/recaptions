@@ -7,7 +7,7 @@ const fontFamily = CaptionFont;
 
 const textStyle: React.CSSProperties = {
   fontFamily,
-  fontSize: 50,
+  fontSize: 70,
   color: "white",
   textAlign: "center",
   textTransform: "capitalize",

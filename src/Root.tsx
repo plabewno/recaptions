@@ -20,7 +20,7 @@ export const RemotionRoot: React.FC = () => {
         fps: 60,
         switchCaptionsDurationMs: 200,
         captionStyle: "simple" as const,
-        captionVerticalOffset: 40,
+        captionVerticalOffset: 30,
         captionHorizontalOffset: 0,
       }}
     />
