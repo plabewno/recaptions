@@ -11,12 +11,12 @@ const __dirname = dirname(__filename);
 // Define the path to the whisper-config.mjs file
 const configFilePath = join(__dirname, "whisper-config.mjs");
 
-// Define the list of available Whisper models (only .en and large variants as requested)
+// Define the list of available Whisper
 const modelChoices = [
-  { title: "tiny", value: "tiny.en" },
-  { title: "base", value: "base.en" },
-  { title: "small", value: "small.en" },
-  { title: "medium", value: "medium.en" },
+  { title: "tiny", value: "tiny" },
+  { title: "base", value: "base" },
+  { title: "small", value: "small" },
+  { title: "medium", value: "medium" },
   { title: "large-v1", value: "large-v1" },
   { title: "large-v2", value: "large-v2" },
   { title: "large-v3", value: "large-v3" },
