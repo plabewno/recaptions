@@ -9,6 +9,7 @@ import {
   Sequence,
   useVideoConfig,
   watchStaticFile,
+  getRemotionEnvironment, // CORRECTED: Import getRemotionEnvironment
 } from "remotion";
 import { z } from "zod";
 import SubtitlePage from "./SubtitlePage";
@@ -17,6 +18,7 @@ import { Simple } from "./Simple";
 import { loadFont } from "../load-font";
 import { NoCaptionFile } from "./NoCaptionFile";
 import { Caption, createTikTokStyleCaptions } from "@remotion/captions";
+import { CaptionReferenceList } from "./CaptionReferenceList";
 
 export const captionStyles = ["Ali Abdaal", "simple"] as const;
 
@@ -24,7 +26,7 @@ const textTransformOptions = ["capitalize", "uppercase", "lowercase"] as const;
 
 export const captionedVideoSchema = z.object({
   src: z.string(),
-  fps: z.number().int().positive().optional().default(30), // FPS is now a prop
+  fps: z.number().int().positive().optional().default(30),
   captionStyle: z.enum(captionStyles).optional().default("Ali Abdaal"),
   captionVerticalOffset: z
     .number()
@@ -43,6 +45,31 @@ export const captionedVideoSchema = z.object({
   width: z.number().int().positive(),
   height: z.number().int().positive(),
   switchCaptionsDurationMs: z.number().int().positive().optional(),
+  captionColor: z
+    .string({
+      description: '{"widget": "color", "label": "Default Caption Color"}',
+    })
+    .optional()
+    .default("#FFFFFF"),
+  highlightColor: z
+    .string({
+      description: '{"widget": "color", "label": "Highlight Color"}',
+    })
+    .optional()
+    .default("#FFFF00"),
+  highlightCaptionIndices: z
+    .string({
+      description:
+        "Comma-separated list of caption indices to highlight (see reference list)",
+    })
+    .optional()
+    .default(""),
+  showReferenceList: z
+    .boolean({
+      description: '{"widget": "toggle", "label": "Show Reference List"}',
+    })
+    .optional()
+    .default(true),
   textTransform: z
     .enum(textTransformOptions)
     .optional()
@@ -52,7 +79,6 @@ export const captionedVideoSchema = z.object({
 export const calculateCaptionedVideoMetadata: CalculateMetadataFunction<
   z.infer<typeof captionedVideoSchema>
 > = async ({ props }) => {
-  // Use the fps from the props
   const { fps } = props;
   const metadata = await getVideoMetadata(props.src);
 
@@ -77,11 +103,15 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
   captionHorizontalOffset,
   switchCaptionsDurationMs: switchCaptionsDurationMsProp,
   textTransform,
-  // Note: `fps` prop isn't needed here directly. `useVideoConfig()` will provide it.
+  captionColor,
+  highlightColor,
+  highlightCaptionIndices,
+  showReferenceList,
 }) => {
   const [subtitles, setSubtitles] = useState<Caption[]>([]);
   const [handle] = useState(() => delayRender());
-  const { fps } = useVideoConfig(); // This gets the FPS set by calculateMetadata
+  const { fps } = useVideoConfig();
+  const { isStudio } = getRemotionEnvironment(); // CORRECTED: Call the function directly
 
   const switchCaptionsDurationMs = switchCaptionsDurationMsProp ?? 1500;
 
@@ -120,6 +150,15 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
     });
   }, [subtitles, switchCaptionsDurationMs]);
 
+  const indicesToHighlight = useMemo(
+    () =>
+      highlightCaptionIndices
+        .split(",")
+        .map((s) => parseInt(s.trim(), 10))
+        .filter((n) => !isNaN(n)),
+    [highlightCaptionIndices],
+  );
+
   const PageComponent = captionStyle === "simple" ? Simple : SubtitlePage;
 
   const positioningStyle = useMemo((): React.CSSProperties => {
@@ -133,6 +172,8 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
 
   return (
     <AbsoluteFill style={{ backgroundColor: "transparent" }}>
+      <CaptionReferenceList pages={pages} show={isStudio && showReferenceList} />
+
       {pages.map((page, index) => {
         const nextPage = pages[index + 1] ?? null;
         const subtitleStartFrame = (page.startMs / 1000) * fps;
@@ -143,6 +184,9 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
         if (durationInFrames <= 0) {
           return null;
         }
+
+        const isHighlighted = indicesToHighlight.includes(index);
+        const finalColor = isHighlighted ? highlightColor : captionColor;
 
         return (
           <Sequence
@@ -155,6 +199,7 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
                 key={index}
                 page={page}
                 textTransform={textTransform}
+                captionColor={finalColor}
               />
             </AbsoluteFill>
           </Sequence>

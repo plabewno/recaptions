@@ -15,7 +15,8 @@ const customEasing = Easing.ease;
 export const AliAbdaal: React.FC<{
   readonly page: TikTokPage;
   readonly textTransform: "capitalize" | "uppercase" | "lowercase";
-}> = ({ page, textTransform }) => {
+  readonly captionColor: string;
+}> = ({ page, textTransform, captionColor }) => {
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
   const timeInMs = (frame / fps) * 1000;
@@ -67,7 +68,7 @@ export const AliAbdaal: React.FC<{
     <div
       style={{
         fontSize,
-        color: "white",
+        color: captionColor,
         backgroundColor: "rgba(0, 0, 0, 0.75)",
         paddingTop: "10px",
         paddingBottom: "10px",
@@ -106,7 +107,6 @@ export const AliAbdaal: React.FC<{
               style={{
                 display: "inline",
                 whiteSpace: "pre",
-                color: "white",
                 opacity: wordOpacity,
               }}
             >

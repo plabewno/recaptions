@@ -5,15 +5,6 @@ import { TikTokPage } from "@remotion/captions";
 
 const fontFamily = CaptionFont;
 
-const textStyle: React.CSSProperties = {
-  fontFamily,
-  fontSize: 70,
-  color: "white",
-  textAlign: "center",
-  paintOrder: "stroke",
-  WebkitTextStroke: "10px black",
-};
-
 const entryGrowEase = Easing.bezier(0, 0.3, 0.6, 1);
 const entrySettleEase = Easing.bezier(0.3, 0, 0.7, 1);
 const exitEase = Easing.bezier(0, 0.3, 0.5, 1);
@@ -29,9 +20,19 @@ const EXIT_ANIMATION_FRAMES = 2;
 export const Simple: React.FC<{
   readonly page: TikTokPage;
   readonly textTransform: "capitalize" | "uppercase" | "lowercase";
-}> = ({ page, textTransform }) => {
+  readonly captionColor: string;
+}> = ({ page, textTransform, captionColor }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
+
+  const textStyle: React.CSSProperties = {
+    fontFamily,
+    fontSize: 70,
+    color: captionColor,
+    textAlign: "center",
+    paintOrder: "stroke",
+    WebkitTextStroke: "10px black",
+  };
 
   const fullText = page.tokens.map((t) => t.text).join("");
 

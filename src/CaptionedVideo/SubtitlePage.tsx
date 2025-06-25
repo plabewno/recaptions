@@ -2,8 +2,18 @@ import React from "react";
 import { AliAbdaal } from "./AliAbdaal";
 import { TikTokPage } from "@remotion/captions";
 
-const SubtitlePage: React.FC<{ readonly page: TikTokPage }> = ({ page }) => {
-  return <AliAbdaal page={page} />;
+const SubtitlePage: React.FC<{
+  readonly page: TikTokPage;
+  readonly textTransform: "capitalize" | "uppercase" | "lowercase";
+  readonly captionColor: string;
+}> = ({ page, textTransform, captionColor }) => {
+  return (
+    <AliAbdaal
+      page={page}
+      textTransform={textTransform}
+      captionColor={captionColor}
+    />
+  );
 };
 
 export default SubtitlePage;
