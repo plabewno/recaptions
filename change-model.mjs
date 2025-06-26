@@ -2,16 +2,11 @@ import { readFile, writeFile } from "node:fs/promises";
 import prompts from "prompts";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
-import { WHISPER_MODEL } from "./whisper-config.mjs"; // Import current model for initial selection
 
-// Resolve the current directory for file operations
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const subMjsPath = join(__dirname, "sub.mjs");
 
-// Define the path to the whisper-config.mjs file
-const configFilePath = join(__dirname, "whisper-config.mjs");
-
-// Define the list of available Whisper
 const modelChoices = [
   { title: "tiny", value: "tiny" },
   { title: "base", value: "base" },
@@ -26,13 +21,32 @@ const modelChoices = [
 
 async function changeWhisperModel() {
   try {
-    // Read the current content of the config file
-    const currentConfigContent = await readFile(configFilePath, "utf8");
-    const lines = currentConfigContent.split("\n");
+    // Read the current content of the sub.mjs file
+    const currentContent = await readFile(subMjsPath, "utf8");
+    const lines = currentContent.split("\n");
 
-    // Determine the initial selection for the prompt based on the current WHISPER_MODEL
+    // Find the current model and the line index
+    let currentModel = "";
+    let modelLineIndex = -1;
+    const modelRegex = /const WHISPER_MODEL = "(.*)";/;
+
+    for (let i = 0; i < lines.length; i++) {
+      const match = lines[i].match(modelRegex);
+      if (match) {
+        currentModel = match[1];
+        modelLineIndex = i;
+        break;
+      }
+    }
+
+    if (modelLineIndex === -1) {
+      console.error("Could not find 'WHISPER_MODEL' in sub.mjs.");
+      return;
+    }
+
+    // Determine the initial selection for the prompt
     const initialIndex = modelChoices.findIndex(
-      (choice) => choice.value === WHISPER_MODEL,
+      (choice) => choice.value === currentModel,
     );
 
     // Prompt the user to select a new model
@@ -41,22 +55,22 @@ async function changeWhisperModel() {
       name: "selectedModel",
       message: "Select a Whisper model:",
       choices: modelChoices,
-      initial: initialIndex !== -1 ? initialIndex : 0, // Set initial selection, default to first if not found
+      initial: initialIndex !== -1 ? initialIndex : 0,
     });
 
-    const selectedModel = response.selectedModel;
+    const { selectedModel } = response;
 
     if (!selectedModel) {
       console.log("Model selection cancelled. No changes made.");
       return;
     }
 
-    // Update line 29 (which is index 28 in a 0-indexed array) with the new model
-    lines[28] = `export const WHISPER_MODEL = "${selectedModel}";`;
+    // Update the line with the new model
+    lines[modelLineIndex] = `const WHISPER_MODEL = "${selectedModel}";`;
 
-    // Write the updated content back to the config file
-    const updatedConfigContent = lines.join("\n");
-    await writeFile(configFilePath, updatedConfigContent, "utf8");
+    // Write the updated content back to the file
+    const updatedContent = lines.join("\n");
+    await writeFile(subMjsPath, updatedContent, "utf8");
 
     const displayName =
       modelChoices.find((c) => c.value === selectedModel)?.title ??
