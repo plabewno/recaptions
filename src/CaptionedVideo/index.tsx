@@ -9,7 +9,7 @@ import {
   Sequence,
   useVideoConfig,
   watchStaticFile,
-  getRemotionEnvironment, // CORRECTED: Import getRemotionEnvironment
+  getRemotionEnvironment,
 } from "remotion";
 import { z } from "zod";
 import SubtitlePage from "./SubtitlePage";
@@ -51,16 +51,10 @@ export const captionedVideoSchema = z.object({
     })
     .optional()
     .default("#FFFFFF"),
-  highlightColor: z
-    .string({
-      description: '{"widget": "color", "label": "Highlight Color"}',
-    })
-    .optional()
-    .default("#FFFF00"),
-  highlightCaptionIndices: z
+  colorOverrides: z
     .string({
       description:
-        "Comma-separated list of caption indices to highlight (see reference list)",
+        '{"widget": "textarea", "label": "Color Overrides (index:color)"}',
     })
     .optional()
     .default(""),
@@ -70,12 +64,10 @@ export const captionedVideoSchema = z.object({
     })
     .optional()
     .default(true),
-  textTransform: z
-    .enum(textTransformOptions)
-    .optional()
-    .default("capitalize"),
+  textTransform: z.enum(textTransformOptions).optional().default("capitalize"),
 });
 
+// ... (calculateCaptionedVideoMetadata and getFileExists remain the same)
 export const calculateCaptionedVideoMetadata: CalculateMetadataFunction<
   z.infer<typeof captionedVideoSchema>
 > = async ({ props }) => {
@@ -104,14 +96,13 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
   switchCaptionsDurationMs: switchCaptionsDurationMsProp,
   textTransform,
   captionColor,
-  highlightColor,
-  highlightCaptionIndices,
+  colorOverrides,
   showReferenceList,
 }) => {
   const [subtitles, setSubtitles] = useState<Caption[]>([]);
   const [handle] = useState(() => delayRender());
   const { fps } = useVideoConfig();
-  const { isStudio } = getRemotionEnvironment(); // CORRECTED: Call the function directly
+  const { isStudio } = getRemotionEnvironment();
 
   const switchCaptionsDurationMs = switchCaptionsDurationMsProp ?? 1500;
 
@@ -150,14 +141,28 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
     });
   }, [subtitles, switchCaptionsDurationMs]);
 
-  const indicesToHighlight = useMemo(
-    () =>
-      highlightCaptionIndices
-        .split(",")
-        .map((s) => parseInt(s.trim(), 10))
-        .filter((n) => !isNaN(n)),
-    [highlightCaptionIndices],
-  );
+  // Parse the colorOverrides string into a map of index -> color
+  const colorOverridesMap = useMemo(() => {
+    const map: { [key: number]: string } = {};
+    if (!colorOverrides) {
+      return map;
+    }
+    // Split by comma to get individual rules: "2:red", "5:#00ff00"
+    const rules = colorOverrides.split(",").filter(Boolean);
+    for (const rule of rules) {
+      // Split by colon to get the index and color
+      const parts = rule.split(":").map((p) => p.trim());
+      if (parts.length !== 2) continue; // Malformed rule
+
+      const index = parseInt(parts[0], 10);
+      const color = parts[1];
+
+      if (!isNaN(index) && color) {
+        map[index] = color;
+      }
+    }
+    return map;
+  }, [colorOverrides]);
 
   const PageComponent = captionStyle === "simple" ? Simple : SubtitlePage;
 
@@ -172,7 +177,10 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
 
   return (
     <AbsoluteFill style={{ backgroundColor: "transparent" }}>
-      <CaptionReferenceList pages={pages} show={isStudio && showReferenceList} />
+      <CaptionReferenceList
+        pages={pages}
+        show={isStudio && showReferenceList}
+      />
 
       {pages.map((page, index) => {
         const nextPage = pages[index + 1] ?? null;
@@ -185,8 +193,8 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
           return null;
         }
 
-        const isHighlighted = indicesToHighlight.includes(index);
-        const finalColor = isHighlighted ? highlightColor : captionColor;
+        // Check if there is an override for this index, otherwise use the default color
+        const finalColor = colorOverridesMap[index] ?? captionColor;
 
         return (
           <Sequence

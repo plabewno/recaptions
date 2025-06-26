@@ -24,9 +24,8 @@ export const RemotionRoot: React.FC = () => {
         captionHorizontalOffset: 0,
         textTransform: "capitalize" as const,
         captionColor: "#FFFFFF",
-        highlightColor: "#FFFF00",
-        highlightCaptionIndices: "2,5",
-        showReferenceList: true, // Add the new default prop
+        colorOverrides: "2:#FFFF00, 5:cyan, 8:#FF69B4",
+        showReferenceList: true,
       }}
     />
   );
