@@ -9,17 +9,16 @@ import {
 } from "node:fs";
 import path from "path";
 import {
-  WHISPER_LANG,
-  WHISPER_MODEL,
-  WHISPER_PATH,
-  WHISPER_VERSION,
-} from "./whisper-config.mjs";
-import {
   downloadWhisperModel,
   installWhisperCpp,
   transcribe,
   toCaptions,
 } from "@remotion/install-whisper-cpp";
+
+const WHISPER_PATH = path.join(process.cwd(), "whisper.cpp");
+const WHISPER_VERSION = "1.7.2";
+const WHISPER_MODEL = "medium";
+const WHISPER_LANG = "en";
 
 const extractToTempAudioFile = (fileToTranscribe, tempOutFile) => {
   execSync(

@@ -53,17 +53,17 @@ export const Simple: React.FC<{
       },
     );
   } else if (frame < ENTRY_GROW_FRAMES) {
-    scale = interpolate(frame, [0, ENTRY_GROW_FRAMES], [0.9, 1.1], {
+    scale = interpolate(frame, [0, ENTRY_GROW_FRAMES], [0.9, 1.05], {
       easing: entryGrowEase,
       extrapolateRight: "clamp",
     });
   } else if (frame < ENTRY_GROW_FRAMES + ENTRY_HOLD_FRAMES) {
-    scale = 1.1;
+    scale = 1.05;
   } else if (frame < ENTRY_ANIMATION_TOTAL_FRAMES) {
     scale = interpolate(
       frame,
       [ENTRY_GROW_FRAMES + ENTRY_HOLD_FRAMES, ENTRY_ANIMATION_TOTAL_FRAMES],
-      [1.1, 1.0],
+      [1.05, 1.0],
       {
         easing: entrySettleEase,
         extrapolateRight: "clamp",
