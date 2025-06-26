@@ -3,5 +3,5 @@ dist
 out
 whisper.cpp
 temp
-public/input.mp4
+public/input.wav
 public/input.json

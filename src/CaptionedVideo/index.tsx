@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   AbsoluteFill,
+  Audio,
   CalculateMetadataFunction,
   cancelRender,
   continueRender,
@@ -13,7 +14,7 @@ import {
 } from "remotion";
 import { z } from "zod";
 import SubtitlePage from "./SubtitlePage";
-import { getVideoMetadata } from "@remotion/media-utils";
+import { getAudioData, getVideoMetadata } from "@remotion/media-utils";
 import { Simple } from "./Simple";
 import { loadFont } from "../load-font";
 import { NoCaptionFile } from "./NoCaptionFile";
@@ -24,8 +25,7 @@ export const captionStyles = ["Ali Abdaal", "simple"] as const;
 
 const textTransformOptions = ["capitalize", "uppercase", "lowercase"] as const;
 
-export const captionedVideoSchema = z.object({
-  src: z.string(),
+const captionSchema = {
   fps: z.number().int().positive().optional().default(30),
   captionStyle: z.enum(captionStyles).optional().default("Ali Abdaal"),
   captionVerticalOffset: z
@@ -65,14 +65,37 @@ export const captionedVideoSchema = z.object({
     .optional()
     .default(true),
   textTransform: z.enum(textTransformOptions).optional().default("capitalize"),
+};
+
+export const captionedVideoSchema = z.object({
+  src: z.string(),
+  ...captionSchema,
 });
 
-// ... (calculateCaptionedVideoMetadata and getFileExists remain the same)
+export const captionedAudioSchema = z.object({
+  src: z.string(),
+  ...captionSchema,
+});
+
 export const calculateCaptionedVideoMetadata: CalculateMetadataFunction<
   z.infer<typeof captionedVideoSchema>
 > = async ({ props }) => {
   const { fps } = props;
   const metadata = await getVideoMetadata(props.src);
+
+  return {
+    fps,
+    durationInFrames: Math.floor(metadata.durationInSeconds * fps),
+    width: props.width,
+    height: props.height,
+  };
+};
+
+export const calculateCaptionedAudioMetadata: CalculateMetadataFunction<
+  z.infer<typeof captionedAudioSchema>
+> = async ({ props }) => {
+  const { fps } = props;
+  const metadata = await getAudioData(props.src);
 
   return {
     fps,
@@ -107,10 +130,16 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
   const switchCaptionsDurationMs = switchCaptionsDurationMsProp ?? 1500;
 
   const subtitlesFile = src
-    .replace(/.mp4$/, ".json")
-    .replace(/.mkv$/, ".json")
-    .replace(/.mov$/, ".json")
-    .replace(/.webm$/, ".json");
+    .replace(/\.mp4$/, ".json")
+    .replace(/\.mkv$/, ".json")
+    .replace(/\.mov$/, ".json")
+    .replace(/\.webm$/, ".json")
+    .replace(/\.mp3$/, ".json")
+    .replace(/\.wav$/, ".json")
+    .replace(/\.aac$/, ".json")
+    .replace(/\.flac$/, ".json")
+    .replace(/\.ogg$/, ".json")
+    .replace(/\.m4a$/, ".json");
 
   const fetchSubtitles = useCallback(async () => {
     try {
@@ -175,8 +204,11 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
     };
   }, [captionVerticalOffset, captionHorizontalOffset]);
 
+  const isAudio = src.endsWith(".wav") || src.endsWith(".mp3");
+
   return (
     <AbsoluteFill style={{ backgroundColor: "transparent" }}>
+      {isAudio && <Audio src={src} />}
       <CaptionReferenceList
         pages={pages}
         show={isStudio && showReferenceList}

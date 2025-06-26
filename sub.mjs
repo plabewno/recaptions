@@ -57,35 +57,42 @@ const subFile = async (filePath, fileName, folder) => {
   );
 };
 
-const processVideo = async (fullPath, entry, directory) => {
-  if (
-    !fullPath.endsWith(".mp4") &&
-    !fullPath.endsWith(".webm") &&
-    !fullPath.endsWith(".mkv") &&
-    !fullPath.endsWith(".mov")
-  ) {
+const processMediaFile = async (fullPath, entry, directory) => {
+  const supportedExtensions = [
+    ".mp4",
+    ".webm",
+    ".mkv",
+    ".mov",
+    ".wav",
+    ".mp3",
+    ".aac",
+    ".flac",
+    ".ogg",
+    ".m4a",
+  ];
+  const fileExtension = path.extname(fullPath).toLowerCase();
+
+  if (!supportedExtensions.includes(fileExtension)) {
     return;
   }
 
-  const isTranscribed = existsSync(
-    fullPath
-      .replace(/.mp4$/, ".json")
-      .replace(/.mkv$/, ".json")
-      .replace(/.mov$/, ".json")
-      .replace(/.webm$/, ".json")
-      .replace("webcam", "subs"),
-  );
-  if (isTranscribed) {
+  const fileNameWithoutExt = path.basename(fullPath, fileExtension);
+  const jsonOutputPath = path
+    .join(directory, fileNameWithoutExt + ".json")
+    .replace("webcam", "subs");
+
+  if (existsSync(jsonOutputPath)) {
     return;
   }
+
   let shouldRemoveTempDirectory = false;
   if (!existsSync(path.join(process.cwd(), "temp"))) {
     mkdirSync(`temp`);
     shouldRemoveTempDirectory = true;
   }
-  console.log("Extracting audio from file", entry);
+  console.log("Preparing audio for transcription from", entry);
 
-  const tempWavFileName = entry.split(".")[0] + ".wav";
+  const tempWavFileName = fileNameWithoutExt + ".wav";
   const tempOutFilePath = path.join(process.cwd(), `temp/${tempWavFileName}`);
 
   extractToTempAudioFile(fullPath, tempOutFilePath);
@@ -109,7 +116,7 @@ const processDirectory = async (directory) => {
     if (stat.isDirectory()) {
       await processDirectory(fullPath); // Recurse into subdirectories
     } else {
-      await processVideo(fullPath, entry, directory);
+      await processMediaFile(fullPath, entry, directory);
     }
   }
 };
@@ -137,5 +144,5 @@ for (const arg of process.argv.slice(2)) {
   console.log(`Processing file ${fullPath}`);
   const directory = path.dirname(fullPath);
   const fileName = path.basename(fullPath);
-  await processVideo(fullPath, fileName, directory);
+  await processMediaFile(fullPath, fileName, directory);
 }
