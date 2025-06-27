@@ -5,6 +5,9 @@
   "repository": {},
   "license": "UNLICENSED",
   "private": true,
+  "workspaces": [
+    "ui"
+  ],
   "dependencies": {
     "@remotion/animation-utils": "4.0.304",
     "@remotion/cli": "4.0.304",
@@ -35,9 +38,9 @@
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc",
     "transcribe": "bun sub.mjs",
-    "new": "rm public/input.json; bun sub.mjs; remotion studio",
-    "model": "bun change-whisper-model.mjs",
-    "update": "git stash; git pull"
+    "new": "rm public/input.json; bun transcriber.mjs; remotion studio",
+    "update": "git stash; git pull",
+    "dev:frontend": "bun --cwd ui rsbuild dev --open"
   },
   "sideEffects": [
     "*.css"
