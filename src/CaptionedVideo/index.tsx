@@ -65,6 +65,17 @@ const captionSchema = {
     .optional()
     .default(true),
   textTransform: z.enum(textTransformOptions).optional().default("capitalize"),
+  shadowBlur: z
+    .number({ description: '{"widget": "number", "label": "Shadow Blur (px)"}' })
+    .min(0)
+    .optional()
+    .default(20),
+  shadowColor: z
+    .string({
+      description: '{"widget": "color", "label": "Shadow Color"}',
+    })
+    .optional()
+    .default("rgba(0,0,0,1)"),
 };
 
 export const captionedVideoSchema = z.object({
@@ -121,6 +132,8 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
   captionColor,
   colorOverrides,
   showReferenceList,
+  shadowBlur,
+  shadowColor,
 }) => {
   const [subtitles, setSubtitles] = useState<Caption[]>([]);
   const [handle] = useState(() => delayRender());
@@ -215,12 +228,16 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
       />
 
       {pages.map((page, index) => {
-        const nextPage = pages[index + 1] ?? null;
         const subtitleStartFrame = (page.startMs / 1000) * fps;
-        const subtitleEndFrame = nextPage
-          ? (nextPage.startMs / 1000) * fps
-          : Infinity;
-        const durationInFrames = subtitleEndFrame - subtitleStartFrame;
+
+        // The end time of a caption page is the end time of its last word.
+        const lastToken = page.tokens[page.tokens.length - 1];
+        if (!lastToken) {
+          return null;
+        }
+        const pageEndMs = lastToken.toMs;
+        const durationInFrames = ((pageEndMs - page.startMs) / 1000) * fps;
+
         if (durationInFrames <= 0) {
           return null;
         }
@@ -240,6 +257,8 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
                 page={page}
                 textTransform={textTransform}
                 captionColor={finalColor}
+                shadowBlur={shadowBlur}
+                shadowColor={shadowColor}
               />
             </AbsoluteFill>
           </Sequence>

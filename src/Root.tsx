@@ -17,14 +17,14 @@ export const RemotionRoot: React.FC = () => {
         src: staticFile("input.wav"),
         width: 1080,
         height: 1920,
-        fps: 30,
+        fps: 60,
         switchCaptionsDurationMs: 200,
         captionStyle: "simple" as const,
         captionVerticalOffset: 30,
         captionHorizontalOffset: 0,
         textTransform: "capitalize" as const,
-        captionColor: "#FFFFFF",
-        colorOverrides: "2:#FFFF00, 5:cyan, 8:#FF69B4",
+        captionColor: "#F2FD05",
+        colorOverrides: "",
         showReferenceList: true,
       }}
     />

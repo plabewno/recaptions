@@ -6,6 +6,8 @@ const SubtitlePage: React.FC<{
   readonly page: TikTokPage;
   readonly textTransform: "capitalize" | "uppercase" | "lowercase";
   readonly captionColor: string;
+  readonly shadowBlur?: number;
+  readonly shadowColor?: string;
 }> = ({ page, textTransform, captionColor }) => {
   return (
     <AliAbdaal

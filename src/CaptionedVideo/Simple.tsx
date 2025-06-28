@@ -21,17 +21,29 @@ export const Simple: React.FC<{
   readonly page: TikTokPage;
   readonly textTransform: "capitalize" | "uppercase" | "lowercase";
   readonly captionColor: string;
-}> = ({ page, textTransform, captionColor }) => {
+  readonly shadowBlur?: number;
+  readonly shadowColor?: string;
+}> = ({
+  page,
+  textTransform,
+  captionColor,
+  shadowBlur = 15 ,
+  shadowColor = "rgba(0,0,0,1)",
+}) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
 
   const textStyle: React.CSSProperties = {
     fontFamily,
-    fontSize: 70,
+    fontSize: 80,
     color: captionColor,
     textAlign: "center",
     paintOrder: "stroke",
     WebkitTextStroke: "10px black",
+    textShadow: `
+      0px 0px ${shadowBlur * 1}px ${shadowColor},
+      0px 0px ${shadowBlur * 1}px ${shadowColor}
+    `,
   };
 
   const fullText = page.tokens.map((t) => t.text).join("");
