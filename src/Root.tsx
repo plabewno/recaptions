@@ -23,9 +23,11 @@ export const RemotionRoot: React.FC = () => {
         captionVerticalOffset: 30,
         captionHorizontalOffset: 0,
         textTransform: "capitalize" as const,
-        captionColor: "#F2FD05",
-        colorOverrides: "",
+        captionColor: "#FFFFFF",
+        colorOverrides: "3:#07C7F2",
         showReferenceList: true,
+        glowColor: "#07C7F2",
+        glowRadius: 30,
       }}
     />
   );

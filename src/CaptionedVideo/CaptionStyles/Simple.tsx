@@ -23,12 +23,16 @@ export const Simple: React.FC<{
   readonly captionColor: string;
   readonly shadowBlur?: number;
   readonly shadowColor?: string;
+  readonly glowColor?: string;
+  readonly glowRadius?: number;
 }> = ({
   page,
   textTransform,
   captionColor,
   shadowBlur = 15 ,
   shadowColor = "rgba(0,0,0,1)",
+  glowColor = "#FFFFFF",
+  glowRadius = 5,
 }) => {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
@@ -42,13 +46,17 @@ export const Simple: React.FC<{
     WebkitTextStroke: "10px black",
     textShadow: `
       0px 0px ${shadowBlur * 1}px ${shadowColor},
-      0px 0px ${shadowBlur * 1}px ${shadowColor}
+      0px 0px ${shadowBlur * 1}px ${shadowColor},
+      0px 0px ${glowRadius * 1}px ${glowColor},
+      0px 0px ${glowRadius * 2}px ${glowColor},
+      0px 0px ${glowRadius * 3}px ${glowColor}
     `,
   };
 
   const fullText = page.tokens.map((t) => t.text).join("");
 
   let scale = 1.0;
+  let blur = 0;
 
   if (
     frame >= durationInFrames - EXIT_ANIMATION_FRAMES &&
@@ -64,18 +72,42 @@ export const Simple: React.FC<{
         easing: exitEase,
       },
     );
+    blur = interpolate(
+      frame,
+      [durationInFrames - EXIT_ANIMATION_FRAMES, durationInFrames],
+      [0, 10],
+      {
+        extrapolateLeft: "clamp",
+        extrapolateRight: "clamp",
+        easing: exitEase,
+      },
+    );
   } else if (frame < ENTRY_GROW_FRAMES) {
     scale = interpolate(frame, [0, ENTRY_GROW_FRAMES], [0.9, 1.05], {
       easing: entryGrowEase,
       extrapolateRight: "clamp",
     });
+    blur = interpolate(frame, [0, ENTRY_GROW_FRAMES], [10, 0], {
+      easing: entryGrowEase,
+      extrapolateRight: "clamp",
+    });
   } else if (frame < ENTRY_GROW_FRAMES + ENTRY_HOLD_FRAMES) {
     scale = 1.05;
+    blur = 0;
   } else if (frame < ENTRY_ANIMATION_TOTAL_FRAMES) {
     scale = interpolate(
       frame,
       [ENTRY_GROW_FRAMES + ENTRY_HOLD_FRAMES, ENTRY_ANIMATION_TOTAL_FRAMES],
       [1.05, 1.0],
+      {
+        easing: entrySettleEase,
+        extrapolateRight: "clamp",
+      },
+    );
+    blur = interpolate(
+      frame,
+      [ENTRY_GROW_FRAMES + ENTRY_HOLD_FRAMES, ENTRY_ANIMATION_TOTAL_FRAMES],
+      [0, 0],
       {
         easing: entrySettleEase,
         extrapolateRight: "clamp",
@@ -89,6 +121,7 @@ export const Simple: React.FC<{
         ...textStyle,
         textTransform,
         transform: `scale(${scale})`,
+        filter: `blur(${blur}px)`,
       }}
     >
       {fullText}

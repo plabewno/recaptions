@@ -78,6 +78,19 @@ const captionSchema = {
     })
     .optional()
     .default("rgba(0,0,0,1)"),
+  glowColor: z
+    .string({
+      description: '{"widget": "color", "label": "Glow Color"}',
+    })
+    .optional()
+    .default("#FFFFFF"),
+  glowRadius: z
+    .number({
+      description: '{"widget": "number", "label": "Glow Radius (px)"}',
+    })
+    .min(0)
+    .optional()
+    .default(5),
 };
 
 export const captionedVideoSchema = z.object({
@@ -136,6 +149,8 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
   showReferenceList,
   shadowBlur,
   shadowColor,
+  glowColor,
+  glowRadius,
 }) => {
   const [subtitles, setSubtitles] = useState<Caption[]>([]);
   const [handle] = useState(() => delayRender());
@@ -261,6 +276,8 @@ export const CaptionedVideo: React.FC<z.infer<typeof captionedVideoSchema>> = ({
                 captionColor={finalColor}
                 shadowBlur={shadowBlur}
                 shadowColor={shadowColor}
+                glowColor={glowColor}
+                glowRadius={glowRadius}
               />
             </AbsoluteFill>
           </Sequence>
