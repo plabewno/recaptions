@@ -5,7 +5,7 @@ import {
   useVideoConfig,
   Easing,
 } from "remotion";
-import { CaptionFont } from "../load-font";
+import { CaptionFont } from "../../load-font";
 import { makeTransform, translateY } from "@remotion/animation-utils";
 import { TikTokPage } from "@remotion/captions";
 

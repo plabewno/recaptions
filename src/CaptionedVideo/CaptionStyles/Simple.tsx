@@ -1,6 +1,6 @@
 import React from "react";
 import { useCurrentFrame, useVideoConfig, interpolate, Easing } from "remotion";
-import { CaptionFont } from "../load-font";
+import { CaptionFont } from "../../load-font";
 import { TikTokPage } from "@remotion/captions";
 
 const fontFamily = CaptionFont;

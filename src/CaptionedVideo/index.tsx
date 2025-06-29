@@ -15,7 +15,7 @@ import {
 import { z } from "zod";
 import SubtitlePage from "./SubtitlePage";
 import { getAudioData, getVideoMetadata } from "@remotion/media-utils";
-import { Simple } from "./Simple";
+import { Simple } from "./CaptionStyles/Simple";
 import { loadFont } from "../load-font";
 import { NoCaptionFile } from "./NoCaptionFile";
 import { Caption, createTikTokStyleCaptions } from "@remotion/captions";
@@ -66,7 +66,9 @@ const captionSchema = {
     .default(true),
   textTransform: z.enum(textTransformOptions).optional().default("capitalize"),
   shadowBlur: z
-    .number({ description: '{"widget": "number", "label": "Shadow Blur (px)"}' })
+    .number({
+      description: '{"widget": "number", "label": "Shadow Blur (px)"}',
+    })
     .min(0)
     .optional()
     .default(20),

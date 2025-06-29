@@ -14,7 +14,7 @@ export const RemotionRoot: React.FC = () => {
       calculateMetadata={calculateCaptionedAudioMetadata}
       schema={captionedAudioSchema}
       defaultProps={{
-        src: staticFile("input.wav"),
+        src: staticFile("input.mp4"),
         width: 1080,
         height: 1920,
         fps: 60,
