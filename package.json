@@ -38,7 +38,7 @@
     "build": "remotion bundle",
     "upgrade": "remotion upgrade",
     "lint": "eslint src && tsc",
-    "transcribe": "bun sub.mjs",
+    "transcribe": "bun transcriber.mjs",
     "new": "rm public/input.json; bun transcriber.mjs; remotion studio",
     "update": "git stash; git pull",
     "dev:frontend": "bun --cwd ui rsbuild dev --open"

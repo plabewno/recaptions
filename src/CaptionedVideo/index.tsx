@@ -17,7 +17,7 @@ import SubtitlePage from "./SubtitlePage";
 import { getAudioData, getVideoMetadata } from "@remotion/media-utils";
 import { Simple } from "./CaptionStyles/Simple";
 import { loadFont } from "../load-font";
-import { NoCaptionFile } from "./NoCaptionFile";
+import { NoCaptionFile } from "./NoCaptionWarning";
 import { Caption, createTikTokStyleCaptions } from "@remotion/captions";
 import { CaptionReferenceList } from "./CaptionReferenceList";
 
